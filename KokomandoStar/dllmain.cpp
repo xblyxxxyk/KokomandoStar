@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include <windows.h>
 #include <iostream>
 #include <vector>
@@ -13,14 +13,6 @@ DWORD GetPointerAddress(DWORD ptr, std::vector<DWORD> offsets)
     }
     return addr;
 }
-
-HANDLE hThread = NULL; // Thread handle
-DWORD modulebase = (DWORD)GetModuleHandle(L"Kokomando.exe");
-
-int* currentlevel = (int*)GetPointerAddress(modulebase + 0xD8ED0, { 0x8, 0x5350 });
-int lvlptr = 0x0;
-int lvlgun = 0x0;
-
 // offsets
 int KokomandoWorld = 0xD5CDC;
 int MagnumMovement = 0xD68C4;
@@ -38,6 +30,17 @@ int WartoscX = 0x23F8;
 int WartoscZ = 0x23F0;
 int CarLapPTR1 = 0x1384;
 int CarLapPTR2 = 0x2DC;
+int GrabLevelBase = 0xD8ED0;
+int GrabPTR1 = 0x8;
+int GrabPTR2 = 0x5350;
+
+HANDLE hThread = NULL; // Thread handle
+DWORD modulebase = (DWORD)GetModuleHandle(L"Kokomando.exe");
+
+int* currentlevel = (int*)GetPointerAddress(modulebase + GrabLevelBase, { static_cast<unsigned long>(GrabPTR1), static_cast<unsigned long>(GrabPTR2) });
+int lvlptr = 0x0;
+int lvlgun = 0x0;
+
 
 // lvloffsets
 int l1 = 0x8;
@@ -146,7 +149,6 @@ DWORD WINAPI Kokomando(LPVOID lpParam)
         Sleep(10000);
         abort();
     }
-    int* currentlevel = (int*)GetPointerAddress(modulebase + 0xD8ED0, { 0x8, 0x5350 });
     std::cout << "[F] Latanie (Trzymaj Przycisk)" << std::endl;
     std::cout << "[F1] 1000 Amunicji" << std::endl;
     std::cout << "[F2] 99 Zyc" << std::endl;
